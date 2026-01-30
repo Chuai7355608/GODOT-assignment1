@@ -31,8 +31,8 @@ public partial class Player : CharacterBody3D
 
 	private float air_time =0f;
 
-	private float AccelerationRate = 1f;
-	private float DecelerationRate = 4f;
+	private float AccelerationRate = 1.5f;
+	private float DecelerationRate = 6f;
 
 
 	bool isjump = false;
@@ -165,6 +165,7 @@ public partial class Player : CharacterBody3D
 		Vector3 currentHorizontalVelocity = new Vector3(velocity.X,0,velocity.Z); // horizon
 		float currentHorizontalSpeed = currentHorizontalVelocity.Length(); // velocity
 		Vector3 horizontalDir = currentHorizontalVelocity.Normalized(); // direction
+		Vector2 targetHorizontalVelocity = new Vector2 (direction.X,direction.Z) * Speed;
 
 		if(m1)
 		{
@@ -182,56 +183,40 @@ public partial class Player : CharacterBody3D
 
 		if(m2)
 		{
-			if(direction != Vector3.Zero)
-			{
-				horizontalDir = direction;
-			}
-			else if (currentHorizontalSpeed < 0.01f)
+			if(direction != Vector3.Zero || currentHorizontalSpeed < 0.01f)
 			{
 				horizontalDir = direction;
 			}
 			float targetHorizontalSpeed = direction != Vector3.Zero ? Speed : 0f;
-			float newHorizontalSpeed = 0f;
-			if (direction != Vector3.Zero)
-			{
-				newHorizontalSpeed = Mathf.Lerp(currentHorizontalSpeed, targetHorizontalSpeed, AccelerationRate * (float)delta);
-			}
-			else
-			{
-				newHorizontalSpeed = Mathf.Lerp(currentHorizontalSpeed, 0f, DecelerationRate * (float)delta);
-			}
+			float acceleration = direction != Vector3.Zero ? AccelerationRate : DecelerationRate;
 
-			Vector3 newHorizontalVelocity = horizontalDir * newHorizontalSpeed;
+			Vector2 newHorizontalVelocity = new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z) + (targetHorizontalVelocity - new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z)) * acceleration * (float)delta;//A+t*(B-A)
+			
 			velocity.X = newHorizontalVelocity.X;
-			velocity.Z = newHorizontalVelocity.Z;
+			velocity.Z = newHorizontalVelocity.Y;
 		}
 
 		if(m3)
 		{
-			if(direction != Vector3.Zero)
-			{
-				horizontalDir = direction;
-			}
-			else if (currentHorizontalSpeed < 0.01f)
+			if(direction != Vector3.Zero || currentHorizontalSpeed < 0.01f)
 			{
 				horizontalDir = direction;
 			}
 			float targetHorizontalSpeed = direction != Vector3.Zero ? Speed : 0f;
-			float newHorizontalSpeed = 0f;
-			if (direction != Vector3.Zero)
+		    float easeweight = Mathf.Ease(AccelerationRate * (float) delta, 1.3f);
+			float acceleration = direction != Vector3.Zero ?  easeweight : DecelerationRate;
+			if(acceleration == easeweight)
 			{
-				float linearWeight = AccelerationRate * (float)delta;
-		        float easeweight = Mathf.Ease(linearWeight, 2f);
-				newHorizontalSpeed = Mathf.Lerp(currentHorizontalSpeed, targetHorizontalSpeed, AccelerationRate * (float)delta);
+				Vector2 newHorizontalVelocity =  new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z) + (targetHorizontalVelocity - new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z)) * acceleration ;
+				velocity.X = newHorizontalVelocity.X;
+				velocity.Z = newHorizontalVelocity.Y;
 			}
-			else
+			else if(acceleration == DecelerationRate)
 			{
-				newHorizontalSpeed = Mathf.Lerp(currentHorizontalSpeed, 0f, DecelerationRate * (float)delta);
+				Vector2 newHorizontalVelocity =  new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z) + (targetHorizontalVelocity - new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z)) * acceleration * (float)delta ;
+				velocity.X = newHorizontalVelocity.X;
+				velocity.Z = newHorizontalVelocity.Y;
 			}
-
-			Vector3 newHorizontalVelocity = horizontalDir * newHorizontalSpeed;
-			velocity.X = newHorizontalVelocity.X;
-			velocity.Z = newHorizontalVelocity.Z;
 		}
 		
 
@@ -255,7 +240,7 @@ public partial class Player : CharacterBody3D
 
 			var currentRot = character_rotation_root.Rotation;
 			double target_angle = characterDir.Angle();
-			double new_angle = Mathf.LerpAngle(currentRot.Y,target_angle,delta *20);
+			double new_angle = Mathf.LerpAngle(currentRot.Y,target_angle,delta *7);
 			currentRot.Y = (float)new_angle;
 		
 

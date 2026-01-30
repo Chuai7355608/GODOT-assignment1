@@ -31,8 +31,8 @@ public partial class Player : CharacterBody3D
 
 	private float air_time =0f;
 
-	private float AccelerationRate = 1.5f;
-	private float DecelerationRate = 6f;
+	private float AccelerationRate = 2.1f;
+	private float DecelerationRate = 8f;
 
 
 	bool isjump = false;
@@ -165,7 +165,6 @@ public partial class Player : CharacterBody3D
 		Vector3 currentHorizontalVelocity = new Vector3(velocity.X,0,velocity.Z); // horizon
 		float currentHorizontalSpeed = currentHorizontalVelocity.Length(); // velocity
 		Vector3 horizontalDir = currentHorizontalVelocity.Normalized(); // direction
-		Vector2 targetHorizontalVelocity = new Vector2 (direction.X,direction.Z) * Speed;
 
 		if(m1)
 		{
@@ -187,13 +186,15 @@ public partial class Player : CharacterBody3D
 			{
 				horizontalDir = direction;
 			}
+			
 			float targetHorizontalSpeed = direction != Vector3.Zero ? Speed : 0f;
 			float acceleration = direction != Vector3.Zero ? AccelerationRate : DecelerationRate;
 
-			Vector2 newHorizontalVelocity = new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z) + (targetHorizontalVelocity - new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z)) * acceleration * (float)delta;//A+t*(B-A)
-			
+
+			Vector3 newHorizontalVelocity = currentHorizontalVelocity+(acceleration*(float)delta)* (horizontalDir*targetHorizontalSpeed-currentHorizontalVelocity);//A +(B-A)*T
+
 			velocity.X = newHorizontalVelocity.X;
-			velocity.Z = newHorizontalVelocity.Y;
+			velocity.Z = newHorizontalVelocity.Z;
 		}
 
 		if(m3)
@@ -203,19 +204,19 @@ public partial class Player : CharacterBody3D
 				horizontalDir = direction;
 			}
 			float targetHorizontalSpeed = direction != Vector3.Zero ? Speed : 0f;
-		    float easeweight = Mathf.Ease(AccelerationRate * (float) delta, 1.3f);
-			float acceleration = direction != Vector3.Zero ?  easeweight : DecelerationRate;
+		    float easeweight = Mathf.Ease(AccelerationRate * (float)delta, 1.3f);
+			float acceleration = direction != Vector3.Zero ? easeweight : DecelerationRate;
 			if(acceleration == easeweight)
 			{
-				Vector2 newHorizontalVelocity =  new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z) + (targetHorizontalVelocity - new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z)) * acceleration ;
+				Vector3 newHorizontalVelocity = currentHorizontalVelocity+easeweight* (horizontalDir*targetHorizontalSpeed-currentHorizontalVelocity);
 				velocity.X = newHorizontalVelocity.X;
-				velocity.Z = newHorizontalVelocity.Y;
+				velocity.Z = newHorizontalVelocity.Z;
 			}
 			else if(acceleration == DecelerationRate)
 			{
-				Vector2 newHorizontalVelocity =  new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z) + (targetHorizontalVelocity - new Vector2 (currentHorizontalVelocity.X,currentHorizontalVelocity.Z)) * acceleration * (float)delta ;
+				Vector3 newHorizontalVelocity = currentHorizontalVelocity+(acceleration*(float)delta)* (horizontalDir*targetHorizontalSpeed-currentHorizontalVelocity);
 				velocity.X = newHorizontalVelocity.X;
-				velocity.Z = newHorizontalVelocity.Y;
+				velocity.Z = newHorizontalVelocity.Z;
 			}
 		}
 		

@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://bwpt3swomxser"]
+
+[ext_resource type="PackedScene" uid="uid://djy1lgi8y08y" path="res://Scene/Player/character.tscn" id="1_67a6e"]
+[ext_resource type="Script" uid="uid://csy04v47tfwxo" path="res://Scene/Player/Player.cs" id="1_yic5t"]
+
+[sub_resource type="Curve" id="Curve_yic5t"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.23913044, 0.3820225), 0.0, 0.0, 0, 0, Vector2(0.45652175, 0.08988774), 0.0, 0.0, 0, 0, Vector2(0.826087, 0.79775286), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yic5t"]
+height = 2.2
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("character_rotation_root", "character_crouch")]
+script = ExtResource("1_yic5t")
+character_rotation_root = NodePath("CharacterRotation")
+character_crouch = NodePath("collide")
+curve = SubResource("Curve_yic5t")
+
+[node name="CharacterRotation" type="Node3D" parent="."]
+
+[node name="Character" parent="CharacterRotation" instance=ExtResource("1_67a6e")]
+
+[node name="collide" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0580208, 0)
+shape = SubResource("CapsuleShape3D_yic5t")
+
+[node name="Marker3D" type="Marker3D" parent="."]
+transform = Transform3D(0.70710677, -0.49999997, 0.49999997, 0, 0.70710677, 0.70710677, -0.70710677, -0.49999997, 0.49999997, 6, 10, 6)
+
+[node name="Camera3D" type="Camera3D" parent="Marker3D"]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Marker3D/Camera3D"]
+offset_right = 109.0
+offset_bottom = 121.0
+
+[node name="Label" type="Label" parent="Marker3D/Camera3D/VBoxContainer"]
+layout_mode = 2
+text = "1,2,3: change movement mode
+W,A,S,D: Movement
+Space: Jump
+Ctrl: Crouch"

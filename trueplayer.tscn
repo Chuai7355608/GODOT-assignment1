@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://c41ec0p7rdqsd"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_v0dna"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_gvc38"]
+size = Vector3(0.5, 0.35, 0.8)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_72rq8"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ybaia"]
+height = 1.4
+
+[node name="trueplayer" type="CharacterBody3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_v0dna")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.29999995, 0)
+mesh = SubResource("BoxMesh_gvc38")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_72rq8")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 1)
+mesh = SubResource("CapsuleMesh_ybaia")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="MeshInstance3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.1, 0)
+mesh = SubResource("BoxMesh_gvc38")
+skeleton = NodePath("../..")

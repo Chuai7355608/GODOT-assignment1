@@ -44,6 +44,9 @@ public partial class Player : CharacterBody3D
 
 	[Export]
 	Curve curve;
+
+	[Export]
+	Node3D Camera3D;
 	public override void _PhysicsProcess(double delta)
 	{
 
@@ -148,18 +151,22 @@ public partial class Player : CharacterBody3D
 		// Get the input direction and handle the movement/deceleration.
 		// As good practice, you should replace UI actions with custom gameplay actions.
 		Vector2 inputDir = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+		Vector3 direction = (Camera3D.GlobalBasis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
 
-		if (ThirdPersonCamera != null)
-		{
-			 Vector3 cameraEuler = ThirdPersonCamera.Transform.Basis.GetEuler();
-    		Basis horizontalCameraBasis = Basis.FromEuler(new Vector3(0, cameraEuler.Y, 0));
-			direction = (horizontalCameraBasis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-		}
-		else
-		{
-			direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-		}
+
+
+
+
+		// if (ThirdPersonCamera != null)
+		// {
+		// 	 Vector3 cameraEuler = ThirdPersonCamera.Transform.Basis.GetEuler();
+    	// 	Basis horizontalCameraBasis = Basis.FromEuler(new Vector3(0, cameraEuler.Y, 0));
+		// 	direction = (horizontalCameraBasis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+		// }
+		// else
+		// {
+		// 	direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+		// }
 		
 
 		Vector3 currentHorizontalVelocity = new Vector3(velocity.X,0,velocity.Z); // horizon

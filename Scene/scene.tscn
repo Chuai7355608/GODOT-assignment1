@@ -268,9 +268,12 @@ mesh = SubResource("PrismMesh_yjfpt")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.641977, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_x02iy")
 
-[node name="Player" parent="." instance=ExtResource("1_yjfpt")]
+[node name="Player" parent="." node_paths=PackedStringArray("Camera3D") instance=ExtResource("1_yjfpt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.633055, 0.3813653, 1.5557528)
+Camera3D = NodePath("Marker3D/Camera3D")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9260287, 0.377453, 0, -0.377453, 0.9260287, 0, 50.667355, 37.686405)
 shadow_enabled = true
+
+[editable path="Player"]

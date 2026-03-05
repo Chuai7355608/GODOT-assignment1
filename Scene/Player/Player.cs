@@ -107,7 +107,7 @@ public partial class Player : CharacterBody3D
 		{
 			coyote_time += (float)delta;
 
-			//coyote time jump (double jump also lol)
+			//coyote time jump (double jump also)
 			if(coyote_time<0.3f && Input.IsActionJustPressed("ui_accept"))
 			{
 				velocity.Y = JumpVelocity;
@@ -115,6 +115,8 @@ public partial class Player : CharacterBody3D
 
 			if(isjump)
 			{
+				//change gravity to make player stay longer time in the air
+				
 				if(Math.Abs(velocity.Y)<3.0f)
 				{
 					Gtimes = 0.5f;
@@ -150,23 +152,13 @@ public partial class Player : CharacterBody3D
 ////////////////////////////////////////////////////////////////////////////////////////
 		// Get the input direction and handle the movement/deceleration.
 		// As good practice, you should replace UI actions with custom gameplay actions.
+
+
+
 		Vector2 inputDir = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 		Vector3 direction = (Camera3D.GlobalBasis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
 
 
-
-
-
-		// if (ThirdPersonCamera != null)
-		// {
-		// 	 Vector3 cameraEuler = ThirdPersonCamera.Transform.Basis.GetEuler();
-    	// 	Basis horizontalCameraBasis = Basis.FromEuler(new Vector3(0, cameraEuler.Y, 0));
-		// 	direction = (horizontalCameraBasis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-		// }
-		// else
-		// {
-		// 	direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-		// }
 		
 
 		Vector3 currentHorizontalVelocity = new Vector3(velocity.X,0,velocity.Z); // horizon
@@ -187,6 +179,8 @@ public partial class Player : CharacterBody3D
 			}
 		}
 
+
+		//Slow constant Acceleration, fast constant deceleration.
 		if(m2)
 		{
 			if(direction != Vector3.Zero || currentHorizontalSpeed < 0.01f)
@@ -197,13 +191,15 @@ public partial class Player : CharacterBody3D
 			float targetHorizontalSpeed = direction != Vector3.Zero ? Speed : 0f;
 			float acceleration = direction != Vector3.Zero ? AccelerationRate : DecelerationRate;
 
-
-			Vector3 newHorizontalVelocity = currentHorizontalVelocity+(acceleration*(float)delta)* (horizontalDir*targetHorizontalSpeed-currentHorizontalVelocity);//A +(B-A)*T
+			//Vt = V0 + at
+			Vector3 newHorizontalVelocity = currentHorizontalVelocity+(acceleration*(float)delta)* 
+											(horizontalDir*targetHorizontalSpeed-currentHorizontalVelocity);//A +(B-A)*T
 
 			velocity.X = newHorizontalVelocity.X;
 			velocity.Z = newHorizontalVelocity.Z;
 		}
 
+		//Ease acceleration, and constant deceleration.
 		if(m3)
 		{
 			if(direction != Vector3.Zero || currentHorizontalSpeed < 0.01f)
